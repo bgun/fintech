@@ -5,18 +5,28 @@ html, body {
 }
 
 #content {
-    border: 1px solid #AAA;
-    height: 400px;
-    margin: 50px auto;
-    width: 960px;
+    box-sizing: border-box;
+    border: 10px solid #000;
+    height: 100%;
+    position: fixed;
+    width: 100%;
 }
 
 #map {
     background: #444;
+    box-sizing: border-box;
     height: 100%;
     width: 100%;
+}
+#map svg {
+    position: absolute;
+        top: 0;
+        left: 0;
 }
 
 .country {
     fill: #48C;
+}
+.highlight {
+    fill: #F00;
 }
