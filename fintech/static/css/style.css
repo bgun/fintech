@@ -1,0 +1,22 @@
+html, body {
+    background: #000;
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    border: 1px solid #AAA;
+    height: 400px;
+    margin: 50px auto;
+    width: 960px;
+}
+
+#map {
+    background: #444;
+    height: 100%;
+    width: 100%;
+}
+
+.country {
+    fill: #48C;
+}

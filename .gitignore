@@ -1,3 +1,7 @@
 .env
 init/
 *.pyc
+
+#vim swap files
+*.swp
+*.swo

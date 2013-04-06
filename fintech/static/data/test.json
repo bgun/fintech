@@ -1,0 +1,40 @@
+/api/currency/usd?date=asdfasdfda
+
+
+{
+  currency: "USD",
+  date: "2012-04-05",
+  forex: [
+    {
+      name: "GBP"
+      value: 0.8,
+      delta: 0.01
+    },
+      timeseries: [
+        { value: "0.65", delta: "-0.021", date: "2012-04-05" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" },
+        { value: "0.64", delta: "-0.01", date: "2012-04-04" }
+      ]
+    },
+    {
+      name: "RMB",
+      timeseries: [
+        { value: "
+      ]
+    }
+  ]
+}
+
+
