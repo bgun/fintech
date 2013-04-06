@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 
-client = MongoClient(app.config["MONGOHQ_URL"])
+# client = MongoClient(app.config["MONGOHQ_URL"])
 
 
 @app.errorhandler(404)
