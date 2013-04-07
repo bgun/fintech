@@ -1,5 +1,5 @@
 html, body {
-    background: #CCC;
+    background: #DDD;
     font-family: "Helvetica Neue",Arial,sans-serif;
     margin: 0;
     padding: 0;
@@ -84,9 +84,7 @@ body {
 }
 
 .globe {
-    fill: #DDD;
-    /*
+    fill: #EEE;
     stroke: rgba(255, 255, 255, .5);
-    stroke-width: .25px;
-    */
+    stroke-width: 1.5px;
 }
