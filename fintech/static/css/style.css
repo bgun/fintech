@@ -10,6 +10,17 @@ h1 {
     font-weight: 300;
 }
 
+#logo {
+    position: fixed;
+        top: 30px;
+        left: 30px;
+    z-index: 1000;
+}
+#logo h1 {
+    font-size: 64px;
+    margin: 0;
+    padding: 0;
+}
 #content {
     box-sizing: border-box;
     height: 100%;
