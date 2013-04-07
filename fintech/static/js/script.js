@@ -23,22 +23,32 @@ $(function() {
     }
 
     function handleClick(d,i) {
-        $('#sidebar .content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
+        $sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
+        $('path').attr('style','');
         if(d.properties.currency) {
             d3.selectAll('.currency-'+d.properties.currency).transition().style('fill','#FFF');
         }
+        console.log(d.properties);
         $.ajax({
-            url: '/static/data/sad.json',
+            url: '/api/'+d.properties.currency,
             type: 'GET',
             data: {
+                startdate: '2012-03-05',
+                enddate: '2012-04-05'
             },
             success: function(resp) {
-                exploreCurrency(d.properties.currency,resp);
+                exploreCurrency(d.properties.currency,resp.results);
+                toastr.success("Now showing "+d.properties.name+"("+d.properties.currency+")");
+            },
+            error: function(jqXhr, textStatus, errorThrown) {
+                toastr.error(textStatus);
             }
         });
     }
 
     function exploreCurrency(curr,data) {
+        console.log("Exploring: "+curr);
+        console.log(data);
         $sidebar.find('h1').text(curr);
         curIndex = 1;
         renderDelta(data,curIndex);
@@ -230,6 +240,14 @@ $(function() {
             }
         }
         animloop();
+    }
+
+    toastr.options = {
+      "positionClass": "toast-bottom-left",
+      "fadeIn": 300,
+      "fadeOut": 1000,
+      "timeOut": 2000,
+      "extendedTimeOut": 1000
     }
 
     getSize();
