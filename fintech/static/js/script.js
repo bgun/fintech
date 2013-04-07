@@ -10,22 +10,30 @@ window.requestAnimFrame = (function(){
 
 $(function() {
 
-    var $fps = $('#fps');
-    var $sidebar = $('#sidebar');
+    // DOM cache
+    var $tooltip    = $('#tooltip');
+    var $fps        = $('#fps');
+    var $sidebar    = $('#sidebar');
     var $prevButton = $sidebar.find('#prev');
     var $nextButton = $sidebar.find('#next');
     var $playButton = $sidebar.find('#play');
-    var $tooltip = $('#tooltip');
+    var $startDate  = $sidebar.find('#startdate');
+    var $endDate    = $sidebar.find('#enddate');
+
     var width, height;
     var curIndex = 0;
     var curCountry;
     var curData;
     var playing = false;
 
+    var datePickerOptions = {
+      format: 'yyyy-mm-dd'
+    }
+
     var color = {
-        selected: "#2121BB",
-        positive: "#22AA21",
-        negative: "#AA2121"
+      selected: "#2121BB",
+      positive: "#22AA21",
+      negative: "#AA2121"
     };
 
     function getSize() {
@@ -34,13 +42,34 @@ $(function() {
         init();
     }
 
+    $startDate.datepicker(datePickerOptions);
+    $startDate.focus(function(e) {
+      e.preventDefault();
+      pause();
+      var $t = $(this);
+      $t.datepicker('show').on('changeDate',function(e) {
+        $t.datepicker('hide');
+        $endDate.datepicker('show');
+      });
+    });
+    $endDate.datepicker(datePickerOptions);
+    $endDate.focus(function(e) {
+      e.preventDefault();
+      pause();
+      var $t = $(this);
+      $t.datepicker('show').on('changeDate',function(e) {
+        $t.datepicker('hide');
+      });
+    });
     $prevButton.click(function(e) {
         e.preventDefault();
+        pause();
         curIndex -= 1;
         renderData();
     });
     $nextButton.click(function(e) {
         e.preventDefault();
+        pause();
         console.log("next: "+curIndex);
         curIndex += 1;
         renderData();
@@ -48,16 +77,26 @@ $(function() {
     $playButton.click(function(e) {
         e.preventDefault();
         if(playing) {
-            $(this).find('span').text('play');
-            $(this).find('i').removeClass('icon-pause').addClass('icon-play');
-            playing = false;
+          pause();
         } else {
-            $(this).find('span').text('pause');
-            $(this).find('i').removeClass('icon-play').addClass('icon-pause');
-            playing = true;
+          play();
         }
         renderData();
     });
+
+    function play() {
+      console.log("play");
+      playing = true;
+      $playButton.find('span').text('pause');
+      $playButton.find('i').removeClass('icon-play').addClass('icon-pause');
+    }
+
+    function pause() {
+      console.log("pause");
+      playing = false;
+      $playButton.find('span').text('play');
+      $playButton.find('i').removeClass('icon-pause').addClass('icon-play');
+    }
 
     function handleClick(d,i) {
         //$sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
@@ -67,15 +106,19 @@ $(function() {
             d3.selectAll('.currency-'+curCountry.currency).transition().style('fill',color.selected);
         }
         console.log(d.properties);
+        sd = $startDate.val();
+        ed = $endDate.val();
+        console.log(sd);
+        console.log(ed);
         $.ajax({
             url: '/api/'+curCountry.currency,
             type: 'GET',
             data: {
-                startdate: '2012-01-05',
-                enddate: '2012-04-05'
+                startdate: sd,
+                enddate: ed
             },
             success: function(resp) {
-                exploreCurrency(curCountry,resp.results);
+                exploreCurrency(curCountry,resp.results.reverse());
             },
             error: function(jqXhr, textStatus, errorThrown) {
                 toastr.error(textStatus);
@@ -85,20 +128,20 @@ $(function() {
 
     function exploreCurrency(props,data) {
         console.log("Exploring "+data.length+" days: "+props.currency);
-        if(data.length) {
+        curData = data;
+        if(curData.length) {
             toastr.success("Now showing "+props.name+" ("+props.currency+")");
             $sidebar.find('h1').text(props.name+" ("+props.currency+")");
-            curIndex = data.length-1;
-            curData = data;
+            curIndex = 0;
+            // calculate deltas
             for(var d in curData) {
-                console.log(d);
-                d = data.length - 1 - d;
+                //console.log(d);
                 for(var f in curData[d].forex) {
-                    if(d == data.length-1) {
+                    if(d == 0) {
                         curData[d].forex[f].delta = 1;
                     } else {
-                        curData[d].forex[f].delta = curData[d+1].forex[f].delta;
-                        curData[d].forex[f].delta *= 1+((curData[d].forex[f].val - curData[d+1].forex[f].val) / curData[d+1].forex[f].val);
+                        curData[d].forex[f].delta = curData[d-1].forex[f].delta;
+                        curData[d].forex[f].delta *= 1+((curData[d].forex[f].val - curData[d-1].forex[f].val) / curData[d-1].forex[f].val);
                     }
                 }
             }
@@ -109,23 +152,22 @@ $(function() {
     }
 
     function renderData(index) {
-        console.log("render");
-        var data = curData;
         if(index) {
             curIndex = index;
         }
+        console.log("render: "+curIndex);
         if(curIndex < 0 || curIndex >= curData.length) {
-            $playButton.trigger('click');
+          pause();
         } else {
-            console.log(curIndex);
-            $sidebar.find('h3').text(curData[curIndex].date+" to "+curData[curIndex-1].date);
+            $sidebar.find('h3').text(curData[curIndex].date);
 
+            // animate
             if(playing) {
                 setTimeout(function() {
-                    renderData(curIndex-1);
+                    renderData(curIndex+1);
                 },300);
             }
-            _.each(data[curIndex].forex,function(item,i) {
+            _.each(curData[curIndex].forex,function(item,i) {
                 /*
                 // show red/green for positive or negative change since previous day
                 var delta = item.val - curData[curIndex-1].forex[i].val;
@@ -135,6 +177,7 @@ $(function() {
                     d3.selectAll('.currency-'+item.curr).transition().style('fill',color.positive);
                 }
                 */
+                console.log(item.delta);
                 var color = "";
                 if(item.delta >= 1) {
                     color = (item.delta-1) * 255;

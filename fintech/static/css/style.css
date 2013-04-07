@@ -16,12 +16,13 @@ h1 {
 
 #logo {
     position: fixed;
-        top: 10px;
+        top: 20px;
         left: 10px;
     z-index: 1000;
 }
 #logo h1 {
     font-size: 64px;
+    letter-spacing: -2px;
     margin: 0;
     padding: 0;
 }
