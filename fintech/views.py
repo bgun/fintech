@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, jsonify, request
+from flask import render_template, redirect, url_for, jsonify, request, json
 
 import pymongo as pg
 import datetime
@@ -24,7 +24,7 @@ def api(collection):
     if None in (startdate, enddate):
         return "ERROR. Need `startdate` & `enddate`. Savvy?"
 
-    results = db[collection].find({"date": {"$gt": startdate, "$lt": enddate}})
+    results = db[collection].find({"date": {"$gte": startdate, "$lte": enddate}})
     
     client.close()
 
@@ -34,6 +34,7 @@ def api(collection):
         del r["_id"]
         final.append(r)
 
-    return jsonify({"results":list(final)})
+    
+    return jsonify(json.loads(str(json.dumps({"results":list(final)})).replace("NaN", "-1.0")))
 
 
