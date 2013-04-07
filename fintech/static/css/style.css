@@ -113,3 +113,13 @@ h1 {
     stroke: #404343;
     stroke-width: 0px;
 }
+
+#loader {
+    display: block; 
+    width: 128px;
+    height: 128px;
+    position: absolute; 
+    right: 425px;
+    top: 25px;
+    display: none;
+}
