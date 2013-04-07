@@ -11,6 +11,9 @@ window.requestAnimFrame = (function(){
 $(function() {
 
     var $fps = $('#fps');
+    var $sidebar = $('#sidebar');
+    var $prevButton = $sidebar.find('#prev');
+    var $nextButton = $sidebar.find('#next');
     var width, height;
     var curIndex = 0;
     function getSize(){
@@ -20,7 +23,6 @@ $(function() {
     }
 
     function handleClick(d,i) {
-        console.log(d);
         $('#sidebar .content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
         if(d.properties.currency) {
             d3.selectAll('.currency-'+d.properties.currency).transition().style('fill','#FFF');
@@ -37,15 +39,15 @@ $(function() {
     }
 
     function exploreCurrency(curr,data) {
-        $('#sidebar h1').text(curr);
+        $sidebar.find('h1').text(curr);
         curIndex = 1;
         renderDelta(data,curIndex);
-        $('#sidebar #prev').click(function(e) {
+        $prevButton.click(function(e) {
             e.preventDefault();
             console.log(curIndex);
             renderDelta(data,curIndex-1);
         });
-        $('#sidebar #next').click(function(e) {
+        $nextButton.click(function(e) {
             e.preventDefault();
             console.log(curIndex);
             renderDelta(data,curIndex+1);
@@ -55,7 +57,7 @@ $(function() {
     function renderDelta(data, index) {
         curIndex = index;
         console.log(curIndex);
-        $('#sidebar h3').text(data[index-1].date+" to "+data[index].date);
+        $sidebar.find('h3').text(data[index-1].date+" to "+data[index].date);
         _.each(data[index].forex,function(item,i) {
             var delta = item.val - data[index-1].forex[i].val;
             if(delta > 0) {
@@ -188,15 +190,14 @@ $(function() {
                 redraw();
             } else {
                 if(autospin) {
-                    autoangle = autoangle + 0.5;
+                    autoangle = autoangle + (timedelta*10);
                     var origin = [autoangle, 15];// d3.event.translate[1]];
                     
-                    projection.scale(autoscale);
-                    backgroundCircle.attr('r', autoscale);
-                    path.pointRadius(2 * autoscale / scale0);
-
-                    projection.origin(origin);
                     circle.origin(origin);
+                    projection.origin(origin).scale(autoscale);
+                    //backgroundCircle.attr('r', autoscale);
+                    //path.pointRadius(2 * autoscale / scale0);
+
                     redraw();
                 }
             }
@@ -208,6 +209,7 @@ $(function() {
 
         var lastCalledTime;
         var fps;
+        var timedelta;
 
         function animloop() {
             window.requestAnimFrame(animloop);
@@ -217,9 +219,9 @@ $(function() {
                 fps = 0;
                 return;
             } else {
-                delta = (new Date().getTime() - lastCalledTime)/1000;
+                timedelta = (new Date().getTime() - lastCalledTime)/1000;
                 lastCalledTime = new Date().getTime();
-                fps = 1/delta;
+                fps = 1/timedelta;
                 $fps.text(Math.floor(fps));
             }
 
