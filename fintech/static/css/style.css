@@ -1,7 +1,13 @@
 html, body {
-    background: #000;
+    background: #CCC;
+    font-family: "Helvetica Neue",Arial,sans-serif;
     margin: 0;
     padding: 0;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: 300;
 }
 
 #content {
@@ -12,13 +18,13 @@ html, body {
 }
 
 #map {
-    background: #111;
     box-sizing: border-box;
     height: 100%;
     position: absolute;
         left: 0;
         top: 0;
-    width: 70%;
+    width: 100%;
+    z-index: 1;
 }
 
 #sidebar {
@@ -27,7 +33,8 @@ html, body {
     position: absolute;
         right: 0;
         top: 0;
-    width: 30%;
+    width: 400px;
+    z-index: 2;
 }
 #sidebar .content {
     padding: 1em;
@@ -37,23 +44,6 @@ html, body {
     position: absolute;
         top: 0;
         left: 0;
-}
-
-#map svg .globe {
-  fill: #004;
-  stroke: #46A;
-  stroke-width: 1.5px;
-}
-#map svg .country {
-  fill: #48C;
-  stroke: #F00;
-  stroke-width: 1px;
-}
-#map svg .country:hover {
-  fill: #37A;
-}
-#map svg .highlight {
-  fill: #F00;
 }
 
 
@@ -68,34 +58,24 @@ body {
     top: 25px;
 }
 
-#defs {
-    height: 0;
-    width:0;
-}
-
 .frame {
     fill: none;
     pointer-events: all;
 }
 
 .feature {
-    fill: #6CCC00;
+    fill: #AAA;
     stroke: #fff;
     stroke-width: .5px;
 }
 .feature:hover {
-    fill: #FFF;
+    fill: #A00;
 }
 
 .globe {
-    fill: #038;
+    fill: #DDD;
+    /*
     stroke: rgba(255, 255, 255, .5);
     stroke-width: .25px;
+    */
 }
-
-.star {
-    fill: #fff;
-    stroke: rgba(255, 255, 255, .5);
-    stroke-width: .25px;
-}
-

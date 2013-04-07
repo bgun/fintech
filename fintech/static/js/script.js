@@ -8,24 +8,34 @@ $(function() {
     }
 
     function handleClick(d,i) {
+        console.log(d);
+        $('#sidebar .content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
+        if(d.properties.currency) {
+            d3.selectAll('.currency-'+d.properties.currency).transition().style('fill','#0F0');
+        }
     }
 
-    function init(){
+    function init() {
 
         console.log("Init");
 
         //Setup path for globe
+        var autospin = true;
+        var autoangle = 0;
+
         var projection = d3.geo.azimuthal()
             .mode("orthographic")
-            .translate([width / 2, height / 2])
+            .translate([width / 3, height / 2])
 
         var scale0 = projection.scale();
+        var autoscale = scale0;
 
         var path = d3.geo.path()
             .projection(projection)
             .pointRadius(2);
 
         //Setup zoom behavior
+        console.log(projection.origin());
         var zoom = d3.behavior.zoom(true)
             .translate(projection.origin())
             .scale(projection.scale())
@@ -52,10 +62,16 @@ $(function() {
 
         //Create the base globe
         var backgroundCircle = svg.append("circle")
-            .attr('cx', width / 2)
+            .attr('cx', width / 3)
             .attr('cy', height / 2)
             .attr('r', projection.scale())
             .attr('class', 'globe')
+            .on('mouseover',function() {
+                autospin = false;
+            })
+            .on('mouseout',function() {
+                autospin = true;
+            })
 
         var g = svg.append("g"),
             features;
@@ -64,9 +80,8 @@ $(function() {
         d3.json("/static/data/world-countries.json", function(collection) {
             features = g.selectAll(".feature").data(collection.features);
             features.enter().append("path")
-                .attr("class", "feature")
-                .attr("title", function(d,i) {
-                    return collection.features[i].properties.name;
+                .attr("class", function(d,i) {
+                    return "feature currency-"+d.properties.currency;
                 })
                 .attr("d", function(d){
                     var clip = path(circle.clip(d));
@@ -76,7 +91,15 @@ $(function() {
                         return "M 0 0";
                     }
                 })
-                .on("click",handleClick);
+                .on("click",handleClick)
+                .on('mouseover',function() {
+                    autospin = false;
+                })
+                .on('mouseout',function() {
+                    autospin = true;
+                })
+
+            console.log("Loaded!");
         });
 
         //Redraw all items with new projections
@@ -96,23 +119,38 @@ $(function() {
         function move() {
             if(d3.event){
                 var scale = d3.event.scale;
-                var origin = [d3.event.translate[0] * -1, 0];// d3.event.translate[1]];
+                autoscale = scale;
+                autoangle = d3.event.translate[0] * -1;
+                var origin = [autoangle, 15];// d3.event.translate[1]];
                 
-                projection.scale(scale);
-                backgroundCircle.attr('r', scale);
-                path.pointRadius(2 * scale / scale0);
+                projection.scale(autoscale);
+                backgroundCircle.attr('r', autoscale);
+                path.pointRadius(2 * autoscale / scale0);
 
                 projection.origin(origin);
                 circle.origin(origin);
                 
                 redraw();
+            } else {
+                if(autospin) {
+                    autoangle = autoangle + 0.5;
+                    var origin = [autoangle, 15];// d3.event.translate[1]];
+                    
+                    projection.scale(autoscale);
+                    backgroundCircle.attr('r', autoscale);
+                    path.pointRadius(2 * autoscale / scale0);
+
+                    projection.origin(origin);
+                    circle.origin(origin);
+                    redraw();
+                }
             }
         }
-
 
         function randomLonLat(){
             return [Math.random() * 360 - 180, Math.random() * 180 - 90];
         }
+        setInterval(move,30);
     }
 
     getSize();
