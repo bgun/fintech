@@ -23,7 +23,7 @@ $(function() {
     var playing = false;
 
     var color = {
-        selected: "#2121BB",
+        selected: "cyan",
         positive: "#22AA21",
         negative: "#AA2121"
     };
@@ -118,7 +118,7 @@ $(function() {
             $playButton.trigger('click');
         } else {
             console.log(curIndex);
-            $sidebar.find('h3').text(curData[curIndex].date+" to "+curData[curIndex-1].date);
+            $sidebar.find('h3').text(curData[curIndex-1].date);
 
             if(playing) {
                 setTimeout(function() {
@@ -139,11 +139,11 @@ $(function() {
                 if(item.delta >= 1) {
                     color = (item.delta-1) * 255;
                     color *= 10;
-                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb(0,"+color+",0)");
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color/5+","+color+","+color/5+")");
                 } else {
                     color = (1-item.delta) * 255;
                     color *= 10;
-                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color+",0,0)");
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color+","+color/5+","+color/5+")");
                 }
             });
         }
