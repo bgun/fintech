@@ -16,6 +16,13 @@ $(function() {
     var $nextButton = $sidebar.find('#next');
     var width, height;
     var curIndex = 0;
+
+    var color = {
+        selected: "white",
+        positive: "green",
+        negative: "red"
+    };
+
     function getSize(){
         width = $('#map').width();
         height = $('#map').height();
