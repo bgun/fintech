@@ -6,27 +6,96 @@ html, body {
 
 #content {
     box-sizing: border-box;
-    border: 10px solid #000;
     height: 100%;
     position: fixed;
     width: 100%;
 }
 
 #map {
-    background: #444;
+    background: #111;
     box-sizing: border-box;
     height: 100%;
-    width: 100%;
+    position: absolute;
+        left: 0;
+        top: 0;
+    width: 70%;
 }
+
+#sidebar {
+    background: #FFF;
+    height: 100%;
+    position: absolute;
+        right: 0;
+        top: 0;
+    width: 30%;
+}
+#sidebar .content {
+    padding: 1em;
+}
+
 #map svg {
     position: absolute;
         top: 0;
         left: 0;
 }
 
-.country {
-    fill: #48C;
+#map svg .globe {
+  fill: #004;
+  stroke: #46A;
+  stroke-width: 1.5px;
 }
-.highlight {
-    fill: #F00;
+#map svg .country {
+  fill: #48C;
+  stroke: #F00;
+  stroke-width: 1px;
 }
+#map svg .country:hover {
+  fill: #37A;
+}
+#map svg .highlight {
+  fill: #F00;
+}
+
+
+body {
+    background: #000;
+}
+
+#info {
+    position: absolute;
+    z-index: 10;
+    left: 25px;
+    top: 25px;
+}
+
+#defs {
+    height: 0;
+    width:0;
+}
+
+.frame {
+    fill: none;
+    pointer-events: all;
+}
+
+.feature {
+    fill: #6CCC00;
+    stroke: #fff;
+    stroke-width: .5px;
+}
+.feature:hover {
+    fill: #FFF;
+}
+
+.globe {
+    fill: #038;
+    stroke: rgba(255, 255, 255, .5);
+    stroke-width: .25px;
+}
+
+.star {
+    fill: #fff;
+    stroke: rgba(255, 255, 255, .5);
+    stroke-width: .25px;
+}
+

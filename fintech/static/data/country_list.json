@@ -34,7 +34,8 @@
         },
         {
             "name": "Australia",
-            "abbr": "AUS"
+            "abbr": "AUS",
+            "currency": "AUD"
         },
         {
             "name": "Austria",
@@ -235,7 +236,8 @@
         },
         {
             "name": "United Kingdom",
-            "abbr": "GBR"
+            "abbr": "GBR",
+            "currency": "GBP"
         },
         {
             "name": "Georgia",

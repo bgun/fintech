@@ -1,12 +1,12 @@
 var App = {
-    initMap: function(geoJsonObj) {
+    initMap: function(world) {
         console.log("Init map");
-        var globe = { type: "Sphere" };
-        var diameter = 500;
-        var radius = diameter / 2;
+        var wWidth = $('#map').width();
+        var wHeight = $('#map').height();
 
-        var wWidth = $(window).width();
-        var wHeight = $(window).height();
+        var globe = { type: "Sphere" };
+        var diameter = wHeight-50;
+        var radius = diameter / 2;
 
         var transX = (wWidth/2)-(radius/2);
         var transY = (wHeight/2)-(radius/2);
@@ -14,38 +14,43 @@ var App = {
         transX = wWidth / 2;
         transY = wHeight / 2;
 
-        var circle = d3.geo.circle();
-
         App.projection = d3.geo.orthographic()
             .scale(radius - 2)
             .rotate([0,0])
             .translate([transX,transY])
+            .clipAngle(90);
+            //.origin([-71.03,42.37])
+            //.mode("orthographic")
 
-        App.svgGlobe = d3.select("#map svg");
+        App.svgGlobe = d3.select("#map svg g");
 
-        App.path = d3.geo.path()
-            .projection(App.projection);
+        App.path = d3.geo.path().projection(App.projection);
 
-        App.svgGlobe.append("circle")
-            .attr('cx', 640)
-            .attr('cy', 640)
-            .attr('r', App.projection.scale())
-            .attr('class', 'globe')
+        App.svgGlobe.append("path")
+            .datum(globe)
+            .attr("class", "globe")
+            .attr("d", App.path);
 
-        App.svgGlobe.append("g")
-            .selectAll("path")
-            .data(geoJsonObj.features)
-            .enter().append("path")
-            .attr("id", function(d,i) { return geoJsonObj.features[i].id; })
-            .attr("title", function(d,i) { return geoJsonObj.features[i].properties.name; })
-            .attr("class", "country")
-            //.attr("d", App.path)
-            .attr("d",function(d){ return App.path(circle.clip(d)) })
-            .on('click',App.handleClick)
-            .on('mouseover',function(d,i) {
-            })
-            .on('mouseout',function(d,i) {
-            });
+        var land = topojson.object(world, world.objects.land)
+        console.log(land);
+
+            App.svgGlobe.append("path")
+                //.selectAll("path")
+                .data(land.coordinates)
+                //.enter().append("path")
+                //.attr("id", function(d,i) { return geoJsonObj.features[i].id; })
+                //.attr("title", function(d,i) { return geoJsonObj.features[i].properties.name; })
+                .attr("class", "country")
+                .attr("d", App.path)
+                .on('click',App.handleClick)
+                /*
+                /*
+                .on('mouseover',function(d,i) {
+                })
+                .on('mouseout',function(d,i) {
+                });
+                */
+
     },
     renderMap: function(angle) {
         App.projection.rotate([angle,0]);
@@ -53,18 +58,30 @@ var App = {
             .attr("d", App.path.projection(App.projection));
     },
     handleClick: function(d,i) {
-        this.style.fill = "#FFF";
+        console.log(this);
         var title = $(this).attr('title');
         var abbr = $(this).attr('id');
-        App.activeCountry = abbr;
-        alert(title);
+        $('#map path').attr('style','');
+        if(abbr == App.activeCountry) {
+            this.style.fill = "";
+            App.activeCountry = null;
+        } else {
+            this.style.fill = "#FFF";
+            App.activeCountry = abbr;
+            alert(title);
+        }
     },
     init: function() {
         console.log("Init");
         App.angle = 0;
         App.deltaX = 0;
-        $.get('/static/data/countries.geo.json',function(resp) {
+        $.get('/static/data/world-110m.json',function(resp) {
             App.initMap(resp);
+            /*
+            setInterval(function() {
+               App.renderMap((App.angle+=0.5)/3);
+            },15);
+            */
             $('#map')
                 .on('mousedown',function() {
                     App.dragging = true;
