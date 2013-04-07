@@ -31,9 +31,9 @@ $(function() {
     }
 
     var color = {
-      selected: "#2121BB",
-      positive: "#22AA21",
-      negative: "#AA2121"
+        selected: "cyan",
+        positive: "#22AA21",
+        negative: "#AA2121"
     };
 
     function getSize() {
@@ -182,11 +182,11 @@ $(function() {
                 if(item.delta >= 1) {
                     color = (item.delta-1) * 255;
                     color *= 10;
-                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb(0,"+color+",0)");
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color/5+","+color+","+color/5+")");
                 } else {
                     color = (1-item.delta) * 255;
                     color *= 10;
-                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color+",0,0)");
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color+","+color/5+","+color/5+")");
                 }
             });
         }
