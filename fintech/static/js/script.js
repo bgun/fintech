@@ -17,6 +17,7 @@ $(function() {
     var $tooltip = $('#tooltip');
     var width, height;
     var curIndex = 0;
+    var curCountry;
 
     var color = {
         selected: "#2121BB",
@@ -33,19 +34,20 @@ $(function() {
     function handleClick(d,i) {
         //$sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
         $('path').attr('style','');
-        if(d.properties.currency) {
-            d3.selectAll('.currency-'+d.properties.currency).transition().style('fill',color.selected);
+        curCountry = d.properties;
+        if(curCountry.currency) {
+            d3.selectAll('.currency-'+curCountry.currency).transition().style('fill',color.selected);
         }
         console.log(d.properties);
         $.ajax({
-            url: '/api/'+d.properties.currency,
+            url: '/api/'+curCountry.currency,
             type: 'GET',
             data: {
                 startdate: '2012-03-05',
                 enddate: '2012-04-05'
             },
             success: function(resp) {
-                exploreCurrency(d.properties,resp.results);
+                exploreCurrency(curCountry,resp.results);
             },
             error: function(jqXhr, textStatus, errorThrown) {
                 toastr.error(textStatus);
@@ -62,12 +64,12 @@ $(function() {
             renderDelta(data,curIndex);
             $prevButton.click(function(e) {
                 e.preventDefault();
-                console.log(curIndex);
+                console.log("prev: "+curIndex);
                 renderDelta(data,-1);
             });
             $nextButton.click(function(e) {
                 e.preventDefault();
-                console.log(curIndex);
+                console.log("next: "+curIndex);
                 renderDelta(data,1);
             });
         } else {
@@ -77,7 +79,6 @@ $(function() {
 
     function renderDelta(data, offset) {
         curIndex += offset;
-        console.log(curIndex);
         $sidebar.find('h3').text(data[curIndex-1].date+" to "+data[curIndex].date);
         _.each(data[curIndex].forex,function(item,i) {
             var delta = item.val - data[curIndex-1].forex[i].val;
