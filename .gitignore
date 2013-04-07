@@ -1,6 +1,8 @@
 .env
 init/
+quandl/
 *.pyc
+.DS_STORE
 
 #vim swap files
 *.swp
