@@ -63,24 +63,24 @@ $(function() {
             $prevButton.click(function(e) {
                 e.preventDefault();
                 console.log(curIndex);
-                renderDelta(data,curIndex-1);
+                renderDelta(data,-1);
             });
             $nextButton.click(function(e) {
                 e.preventDefault();
                 console.log(curIndex);
-                renderDelta(data,curIndex+1);
+                renderDelta(data,1);
             });
         } else {
             toastr.error("No data found for "+props.currency);
         }
     }
 
-    function renderDelta(data, index) {
-        curIndex = index;
+    function renderDelta(data, offset) {
+        curIndex += offset;
         console.log(curIndex);
-        $sidebar.find('h3').text(data[index-1].date+" to "+data[index].date);
-        _.each(data[index].forex,function(item,i) {
-            var delta = item.val - data[index-1].forex[i].val;
+        $sidebar.find('h3').text(data[curIndex-1].date+" to "+data[curIndex].date);
+        _.each(data[curIndex].forex,function(item,i) {
+            var delta = item.val - data[curIndex-1].forex[i].val;
             if(delta > 0) {
                 d3.selectAll('.currency-'+item.curr).transition().style('fill',color.negative);
             } else {
@@ -245,7 +245,7 @@ $(function() {
                 timedelta = (new Date().getTime() - lastCalledTime)/1000;
                 lastCalledTime = new Date().getTime();
                 fps = 1/timedelta;
-                $fps.text(Math.floor(fps));
+                $fps.text("fps: "+Math.floor(fps));
             }
 
             if(autospin) {
