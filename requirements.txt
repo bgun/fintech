@@ -2,7 +2,7 @@ Flask==0.9
 Jinja2==2.6
 Quandl==1.1
 Werkzeug==0.8.3
-numpy==1.7.0
+numpy
 pandas==0.10.1
 pymongo==2.5
 python-dateutil==2.1
