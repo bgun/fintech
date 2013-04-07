@@ -45,8 +45,7 @@ $(function() {
                 enddate: '2012-04-05'
             },
             success: function(resp) {
-                exploreCurrency(d.properties.currency,resp.results);
-                toastr.success("Now showing "+d.properties.name+" ("+d.properties.currency+")");
+                exploreCurrency(d.properties,resp.results);
             },
             error: function(jqXhr, textStatus, errorThrown) {
                 toastr.error(textStatus);
@@ -54,22 +53,26 @@ $(function() {
         });
     }
 
-    function exploreCurrency(curr,data) {
-        console.log("Exploring: "+curr);
-        console.log(data);
-        $sidebar.find('h1').text(curr);
-        curIndex = 1;
-        renderDelta(data,curIndex);
-        $prevButton.click(function(e) {
-            e.preventDefault();
-            console.log(curIndex);
-            renderDelta(data,curIndex-1);
-        });
-        $nextButton.click(function(e) {
-            e.preventDefault();
-            console.log(curIndex);
-            renderDelta(data,curIndex+1);
-        });
+    function exploreCurrency(props,data) {
+        console.log("Exploring: "+props.currency);
+        if(data.length) {
+            toastr.success("Now showing "+props.name+" ("+props.currency+")");
+            $sidebar.find('h1').text(props.currency);
+            curIndex = 1;
+            renderDelta(data,curIndex);
+            $prevButton.click(function(e) {
+                e.preventDefault();
+                console.log(curIndex);
+                renderDelta(data,curIndex-1);
+            });
+            $nextButton.click(function(e) {
+                e.preventDefault();
+                console.log(curIndex);
+                renderDelta(data,curIndex+1);
+            });
+        } else {
+            toastr.error("No data found for "+props.currency);
+        }
     }
 
     function renderDelta(data, index) {
