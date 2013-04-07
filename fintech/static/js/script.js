@@ -14,10 +14,13 @@ $(function() {
     var $sidebar = $('#sidebar');
     var $prevButton = $sidebar.find('#prev');
     var $nextButton = $sidebar.find('#next');
+    var $playButton = $sidebar.find('#play');
     var $tooltip = $('#tooltip');
     var width, height;
     var curIndex = 0;
     var curCountry;
+    var curData;
+    var playing = false;
 
     var color = {
         selected: "#2121BB",
@@ -25,11 +28,36 @@ $(function() {
         negative: "#AA2121"
     };
 
-    function getSize(){
+    function getSize() {
         width = $('#map').width();
         height = $('#map').height();
         init();
     }
+
+    $prevButton.click(function(e) {
+        e.preventDefault();
+        curIndex -= 1;
+        renderData();
+    });
+    $nextButton.click(function(e) {
+        e.preventDefault();
+        console.log("next: "+curIndex);
+        curIndex += 1;
+        renderData();
+    });
+    $playButton.click(function(e) {
+        e.preventDefault();
+        if(playing) {
+            $(this).find('span').text('play');
+            $(this).find('i').removeClass('icon-pause').addClass('icon-play');
+            playing = false;
+        } else {
+            $(this).find('span').text('pause');
+            $(this).find('i').removeClass('icon-play').addClass('icon-pause');
+            playing = true;
+        }
+        renderData();
+    });
 
     function handleClick(d,i) {
         //$sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
@@ -59,35 +87,69 @@ $(function() {
         console.log("Exploring: "+props.currency);
         if(data.length) {
             toastr.success("Now showing "+props.name+" ("+props.currency+")");
-            $sidebar.find('h1').text(props.currency);
+            $sidebar.find('h1').text(props.name+" ("+props.currency+")");
             curIndex = 1;
-            renderDelta(data,curIndex);
-            $prevButton.click(function(e) {
-                e.preventDefault();
-                console.log("prev: "+curIndex);
-                renderDelta(data,-1);
-            });
-            $nextButton.click(function(e) {
-                e.preventDefault();
-                console.log("next: "+curIndex);
-                renderDelta(data,1);
-            });
+            curData = data;
+            for(var d in curData) {
+                console.log(d);
+                for(var f in curData[d].forex) {
+                    if(d == 0) {
+                        curData[d].forex[f].delta = 1;
+                    } else {
+                        curData[d].forex[f].delta = curData[d-1].forex[f].delta;
+                        curData[d].forex[f].delta *= 1+((curData[d].forex[f].val - curData[d-1].forex[f].val) / curData[d-1].forex[f].val);
+                    }
+                }
+            }
+            renderData();
         } else {
             toastr.error("No data found for "+props.currency);
         }
     }
 
-    function renderDelta(data, offset) {
-        curIndex += offset;
-        $sidebar.find('h3').text(data[curIndex-1].date+" to "+data[curIndex].date);
-        _.each(data[curIndex].forex,function(item,i) {
-            var delta = item.val - data[curIndex-1].forex[i].val;
-            if(delta > 0) {
-                d3.selectAll('.currency-'+item.curr).transition().style('fill',color.negative);
-            } else {
-                d3.selectAll('.currency-'+item.curr).transition().style('fill',color.positive);
+    function renderData(index) {
+        console.log("render");
+        var data = curData;
+        if(index) {
+            curIndex = index;
+        }
+        if(curIndex < 0 || curIndex >= curData.length) {
+            $playButton.trigger('click');
+        } else {
+            console.log(curIndex);
+            $sidebar.find('h3').text(curData[curIndex-1].date+" to "+curData[curIndex].date);
+
+            if(playing) {
+                setTimeout(function() {
+                    renderData(curIndex+1);
+                },300);
             }
-        });
+            _.each(data[curIndex].forex,function(item,i) {
+                /*
+                // show red/green for positive or negative change since previous day
+                var delta = item.val - curData[curIndex-1].forex[i].val;
+                if(delta > 0) {
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',color.negative);
+                } else {
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',color.positive);
+                }
+                */
+                var color = "";
+                if(item.delta >= 1) {
+                    color = (item.delta-1) * 255;
+                    color *= 10;
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb(0,"+color+",0)");
+                } else {
+                    color = (1-item.delta) * 255;
+                    color *= 10;
+                    d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color+",0,0)");
+                }
+                if(item.curr = "MMK") {
+                    console.log(item.curr+" "+item.delta);
+                    console.log(color);
+                }
+            });
+        }
     }
 
     function init() {
