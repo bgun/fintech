@@ -1,5 +1,5 @@
-from flask import render_template, redirect, url_for
-from flask import jsonify
+from flask import render_template, redirect, url_for, jsonify
+
 from fintech import app
 
 @app.route("/")
