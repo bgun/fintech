@@ -14,6 +14,7 @@ $(function() {
     var $tooltip    = $('#tooltip');
     var $fps        = $('#fps');
     var $sidebar    = $('#sidebar');
+    var $loader     = $('#loader');
     var $prevButton = $sidebar.find('#prev');
     var $nextButton = $sidebar.find('#next');
     var $playButton = $sidebar.find('#play');
@@ -31,15 +32,18 @@ $(function() {
     }
 
     var color = {
-        selected: "cyan",
-        positive: "#22AA21",
-        negative: "#AA2121"
+      selected: "cyan",
+      positive: "#22AA21",
+      negative: "#AA2121"
     };
 
     function getSize() {
-        width = $('#map').width();
-        height = $('#map').height();
-        init();
+      width = $('#map').width();
+      height = $('#map').height();
+      init();
+    }
+    function log(message) {
+      //console.log(message);
     }
 
     $startDate.datepicker(datePickerOptions);
@@ -62,26 +66,26 @@ $(function() {
       });
     });
     $prevButton.click(function(e) {
-        e.preventDefault();
-        pause();
-        curIndex -= 1;
-        renderData();
+      e.preventDefault();
+      pause();
+      curIndex -= 1;
+      renderData();
     });
     $nextButton.click(function(e) {
-        e.preventDefault();
-        pause();
-        console.log("next: "+curIndex);
-        curIndex += 1;
-        renderData();
+      e.preventDefault();
+      pause();
+      log("next: "+curIndex);
+      curIndex += 1;
+      renderData();
     });
     $playButton.click(function(e) {
-        e.preventDefault();
-        if(playing) {
-          pause();
-        } else {
-          play();
-        }
-        renderData();
+      e.preventDefault();
+      if(playing) {
+        pause();
+      } else {
+        play();
+      }
+      renderData();
     });
 
     $(document).on('keyup',function(e) {
@@ -96,14 +100,14 @@ $(function() {
     });
 
     function play() {
-      console.log("play");
+      log("play");
       playing = true;
       $playButton.find('span').text('pause');
       $playButton.find('i').removeClass('icon-play').addClass('icon-pause');
     }
 
     function pause() {
-      console.log("pause");
+      log("pause");
       playing = false;
       $playButton.find('span').text('play');
       $playButton.find('i').removeClass('icon-pause').addClass('icon-play');
@@ -116,11 +120,12 @@ $(function() {
         if(curCountry.currency) {
             d3.selectAll('.currency-'+curCountry.currency).transition().style('fill',color.selected);
         }
-        console.log(d.properties);
+        log(d.properties);
         sd = $startDate.val();
         ed = $endDate.val();
-        console.log(sd);
-        console.log(ed);
+        log(sd);
+        log(ed);
+        $loader.show();
         $.ajax({
             url: '/api/'+curCountry.currency,
             type: 'GET',
@@ -130,23 +135,25 @@ $(function() {
             },
             success: function(resp) {
                 exploreCurrency(curCountry,resp.results.reverse());
+                $loader.hide();
             },
             error: function(jqXhr, textStatus, errorThrown) {
                 toastr.error(textStatus);
+                $loader.hide();
             }
         });
     }
 
     function exploreCurrency(props,data) {
-        console.log("Exploring "+data.length+" days: "+props.currency);
+        log("Exploring "+data.length+" days: "+props.currency);
         curData = data;
         if(curData.length) {
-            toastr.success("Now showing "+props.name+" ("+props.currency+")");
+            toastr.success("Loaded "+curData.length+" days for "+props.name+" ("+props.currency+")");
             $sidebar.find('h1').text(props.name+" ("+props.currency+")");
             curIndex = 0;
             // calculate deltas
             for(var d in curData) {
-                //console.log(d);
+                //log(d);
                 for(var f in curData[d].forex) {
                     if(d == 0) {
                         curData[d].forex[f].delta = 1;
@@ -166,11 +173,11 @@ $(function() {
         if(index) {
             curIndex = index;
         }
-        console.log("render: "+curIndex);
+        log("render: "+curIndex);
         if(curIndex < 0 || curIndex >= curData.length) {
           pause();
         } else {
-            $sidebar.find('h3').text(curData[curIndex].date);
+            $sidebar.find('h3').text("Now showing: "+curData[curIndex].date);
 
             // animate
             if(playing) {
@@ -204,7 +211,7 @@ $(function() {
 
     function init() {
 
-        console.log("Init");
+        log("Init");
 
         //Setup path for globe
         var autospin = true;
@@ -222,7 +229,7 @@ $(function() {
             .pointRadius(2);
 
         //Setup zoom behavior
-        console.log(projection.origin());
+        log(projection.origin());
         var zoom = d3.behavior.zoom(true)
             .translate(projection.origin())
             .scale(projection.scale())
@@ -231,7 +238,7 @@ $(function() {
 
         var circle = d3.geo.greatCircle();
 
-        console.log(height);
+        log(height);
 
         var svg = d3.select("#map").append("svg")
             .attr("width", width)
@@ -240,7 +247,7 @@ $(function() {
                 .call(zoom)
                 .on("dblclick.zoom", null);
 
-        console.log(svg);
+        log(svg);
 
         svg.append("rect")
             .attr("class", "frame")
@@ -288,7 +295,7 @@ $(function() {
                     $tooltip.hide();
                 })
 
-            console.log("Loaded!");
+            log("Loaded!");
         });
 
         //Redraw all items with new projections
@@ -305,7 +312,7 @@ $(function() {
                         return "M 0 0";
                     }
                 });
-                //console.log("Redrew "+count+" features");
+                //log("Redrew "+count+" features");
             }
         }
 

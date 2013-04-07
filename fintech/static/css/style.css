@@ -16,15 +16,17 @@ h1 {
 
 #logo {
     position: fixed;
-        top: 20px;
-        left: 10px;
+        top: 30px;
+        left: 20px;
     z-index: 1000;
 }
 #logo h1 {
+    color: #5CF;
     font-size: 64px;
     letter-spacing: -2px;
     margin: 0;
     padding: 0;
+    text-shadow: 8px 8px 4px rgba(0,0,0,0.5);
 }
 #fps {
     background: #333;
@@ -44,9 +46,9 @@ h1 {
     width: 100%;
 }
 #tooltip {
-    background: #333;
+    background: #EEE;
     border-radius: 0.5em;
-    color: #DDD;
+    color: #4578ac;
     display: none;
     font-size: 13px;
     padding: 1em;
@@ -67,6 +69,7 @@ h1 {
 
 #sidebar {
     background: #cdcdcd;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
     height: 100%;
     position: absolute;
         right: 0;
