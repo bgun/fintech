@@ -71,7 +71,7 @@ $(function() {
             url: '/api/'+curCountry.currency,
             type: 'GET',
             data: {
-                startdate: '2012-03-05',
+                startdate: '2012-01-05',
                 enddate: '2012-04-05'
             },
             success: function(resp) {
@@ -84,20 +84,21 @@ $(function() {
     }
 
     function exploreCurrency(props,data) {
-        console.log("Exploring: "+props.currency);
+        console.log("Exploring "+data.length+" days: "+props.currency);
         if(data.length) {
             toastr.success("Now showing "+props.name+" ("+props.currency+")");
             $sidebar.find('h1').text(props.name+" ("+props.currency+")");
-            curIndex = 1;
+            curIndex = data.length-1;
             curData = data;
             for(var d in curData) {
                 console.log(d);
+                d = data.length - 1 - d;
                 for(var f in curData[d].forex) {
-                    if(d == 0) {
+                    if(d == data.length-1) {
                         curData[d].forex[f].delta = 1;
                     } else {
-                        curData[d].forex[f].delta = curData[d-1].forex[f].delta;
-                        curData[d].forex[f].delta *= 1+((curData[d].forex[f].val - curData[d-1].forex[f].val) / curData[d-1].forex[f].val);
+                        curData[d].forex[f].delta = curData[d+1].forex[f].delta;
+                        curData[d].forex[f].delta *= 1+((curData[d].forex[f].val - curData[d+1].forex[f].val) / curData[d+1].forex[f].val);
                     }
                 }
             }
@@ -117,11 +118,11 @@ $(function() {
             $playButton.trigger('click');
         } else {
             console.log(curIndex);
-            $sidebar.find('h3').text(curData[curIndex-1].date+" to "+curData[curIndex].date);
+            $sidebar.find('h3').text(curData[curIndex].date+" to "+curData[curIndex-1].date);
 
             if(playing) {
                 setTimeout(function() {
-                    renderData(curIndex+1);
+                    renderData(curIndex-1);
                 },300);
             }
             _.each(data[curIndex].forex,function(item,i) {
@@ -143,10 +144,6 @@ $(function() {
                     color = (1-item.delta) * 255;
                     color *= 10;
                     d3.selectAll('.currency-'+item.curr).transition().style('fill',"rgb("+color+",0,0)");
-                }
-                if(item.curr = "MMK") {
-                    console.log(item.curr+" "+item.delta);
-                    console.log(color);
                 }
             });
         }
