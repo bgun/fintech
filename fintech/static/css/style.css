@@ -81,10 +81,14 @@ body {
 }
 .feature:hover {
     fill: #A00;
+    stroke: #fff;
+    stroke-width: 2px;
 }
 
 .globe {
-    fill: #EEE;
+    fill: #DDD;
+    /*
     stroke: rgba(255, 255, 255, .5);
     stroke-width: 1.5px;
+    */
 }
