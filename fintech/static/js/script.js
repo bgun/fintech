@@ -14,6 +14,7 @@ $(function() {
     var $sidebar = $('#sidebar');
     var $prevButton = $sidebar.find('#prev');
     var $nextButton = $sidebar.find('#next');
+    var $tooltip = $('#tooltip');
     var width, height;
     var curIndex = 0;
 
@@ -30,7 +31,7 @@ $(function() {
     }
 
     function handleClick(d,i) {
-        $sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
+        //$sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
         $('path').attr('style','');
         if(d.properties.currency) {
             d3.selectAll('.currency-'+d.properties.currency).transition().style('fill',color.selected);
@@ -45,7 +46,7 @@ $(function() {
             },
             success: function(resp) {
                 exploreCurrency(d.properties.currency,resp.results);
-                toastr.success("Now showing "+d.properties.name+"("+d.properties.currency+")");
+                toastr.success("Now showing "+d.properties.name+" ("+d.properties.currency+")");
             },
             error: function(jqXhr, textStatus, errorThrown) {
                 toastr.error(textStatus);
@@ -162,11 +163,13 @@ $(function() {
                     }
                 })
                 .on("click",handleClick)
-                .on('mouseover',function() {
+                .on('mouseover',function(d,i) {
                     autospin = false;
+                    $tooltip.html(d.properties.name+" ("+d.properties.currency+")").show();
                 })
-                .on('mouseout',function() {
+                .on('mouseout',function(d,i) {
                     autospin = true;
+                    $tooltip.hide();
                 })
 
             console.log("Loaded!");
@@ -247,6 +250,13 @@ $(function() {
             }
         }
         animloop();
+
+        $('#map').on('mousemove',function(e) {
+            $tooltip.css({
+                top: e.clientY-15,
+                left: e.clientX+5,
+            });
+        });
     }
 
     toastr.options = {
