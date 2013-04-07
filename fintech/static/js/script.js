@@ -26,6 +26,7 @@ $(function() {
     var curCountry;
     var curData;
     var playing = false;
+    var oandaXhr = null;
 
     var datePickerOptions = {
       format: 'yyyy-mm-dd'
@@ -294,7 +295,27 @@ $(function() {
                 .on("click",handleClick)
                 .on('mouseover',function(d,i) {
                     autospin = false;
-                    $tooltip.html(d.properties.name+" ("+d.properties.currency+")").show();
+                    var content = '<div class="info">'+d.properties.name+' ('+d.properties.currency+')</div>';
+                    if(curCountry && d.properties.currency != curCountry.currency) {
+                      var fromCurr = curCountry.currency;
+                      var toCurr   = d.properties.currency;
+                      if(oandaXhr) {
+                        oandaXhr.abort();
+                      }
+                      oandaXhr = $.ajax({
+                        url: 'http://api-sandbox.oanda.com/v1/instruments/'+fromCurr+'_'+toCurr+'/price',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(resp) {
+                          var html = $tooltip.html();
+                          $tooltip.html(html+'<div class="oanda"><h5>OANDA Instrument: '+resp.instrument+'</h5>Bid: '+resp.bid+'<br />Ask: '+resp.ask+'</div>').show();
+                        },
+                        error: function() {
+                          //toastr.warning('OANDA: No instrument found for '+fromCurr+'_'+toCurr);
+                        }
+                      });
+                    }
+                    $tooltip.html(content).show();
                 })
                 .on('mouseout',function(d,i) {
                     autospin = true;
