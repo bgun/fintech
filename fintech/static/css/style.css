@@ -1,13 +1,17 @@
 html, body {
-    background: #DDD;
+    background: #101212;
     font-family: "Helvetica Neue",Arial,sans-serif;
     margin: 0;
     padding: 0;
 }
 
+#fps {
+    color: red;
+}
 h1 {
     font-size: 36px;
     font-weight: 300;
+    color: #4578ac;
 }
 
 #logo {
@@ -39,7 +43,7 @@ h1 {
 }
 
 #sidebar {
-    background: #FFF;
+    background: #cdcdcd;
     height: 100%;
     position: absolute;
         right: 0;
@@ -57,9 +61,8 @@ h1 {
         left: 0;
 }
 
-
 body {
-    background: #000;
+    background: #fff;
 }
 
 #info {
@@ -75,16 +78,19 @@ body {
 }
 
 .feature {
-    fill: #AAA;
-    stroke: #fff;
+    fill: #56535A;
+    stroke: #afafcf;
     stroke-width: .5px;
 }
+
 .feature:hover {
-    fill: #A00;
+    fill: #343434;
+    stroke: white;
+    stroke-width: 1.5px;
 }
 
 .globe {
-    fill: #EEE;
-    stroke: rgba(255, 255, 255, .5);
-    stroke-width: 1.5px;
+    fill: #202339;
+    stroke: #404343;
+    stroke-width: 0px;
 }

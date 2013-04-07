@@ -18,9 +18,9 @@ $(function() {
     var curIndex = 0;
 
     var color = {
-        selected: "white",
-        positive: "green",
-        negative: "red"
+        selected: "#2121BB",
+        positive: "#22AA21",
+        negative: "#AA2121"
     };
 
     function getSize(){
@@ -33,7 +33,7 @@ $(function() {
         $sidebar.find('.content').append("<p>"+d.properties.currency+","+d.properties.name+"</p>");
         $('path').attr('style','');
         if(d.properties.currency) {
-            d3.selectAll('.currency-'+d.properties.currency).transition().style('fill','#FFF');
+            d3.selectAll('.currency-'+d.properties.currency).transition().style('fill',color.selected);
         }
         console.log(d.properties);
         $.ajax({
@@ -78,9 +78,9 @@ $(function() {
         _.each(data[index].forex,function(item,i) {
             var delta = item.val - data[index-1].forex[i].val;
             if(delta > 0) {
-                d3.selectAll('.currency-'+item.curr).transition().style('fill','#F00');
+                d3.selectAll('.currency-'+item.curr).transition().style('fill',color.negative);
             } else {
-                d3.selectAll('.currency-'+item.curr).transition().style('fill','#0F0');
+                d3.selectAll('.currency-'+item.curr).transition().style('fill',color.positive);
             }
         });
     }
@@ -207,7 +207,7 @@ $(function() {
                 redraw();
             } else {
                 if(autospin) {
-                    autoangle = autoangle + (timedelta*10);
+                    autoangle = autoangle + (timedelta*15);
                     var origin = [autoangle, 15];// d3.event.translate[1]];
                     
                     circle.origin(origin);
