@@ -1,6 +1,7 @@
 html, body {
     background: #101212;
     font-family: "Helvetica Neue",Arial,sans-serif;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -118,11 +119,13 @@ h1 {
 }
 
 #loader {
-    display: block; 
     width: 128px;
     height: 128px;
-    position: absolute; 
-    right: 425px;
-    top: 25px;
+    margin-top: -64px;
+    margin-left: -64px;
+    position: absolute;
+      left: 33%;
+      top: 50%;
     display: none;
+    z-index: 1002;
 }

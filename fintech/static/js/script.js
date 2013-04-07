@@ -125,7 +125,7 @@ $(function() {
         ed = $endDate.val();
         log(sd);
         log(ed);
-        $loader.show();
+        $loader.fadeIn();
         $.ajax({
             url: '/api/'+curCountry.currency,
             type: 'GET',
@@ -135,7 +135,7 @@ $(function() {
             },
             success: function(resp) {
                 exploreCurrency(curCountry,resp.results.reverse());
-                $loader.hide();
+                $loader.fadeOut();
             },
             error: function(jqXhr, textStatus, errorThrown) {
                 toastr.error(textStatus);
