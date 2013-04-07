@@ -19,9 +19,9 @@ $(function() {
     var curIndex = 0;
 
     var color = {
-        selected: "white",
-        positive: "green",
-        negative: "red"
+        selected: "#2121BB",
+        positive: "#22AA21",
+        negative: "#AA2121"
     };
 
     function getSize(){
@@ -213,7 +213,7 @@ $(function() {
                 redraw();
             } else {
                 if(autospin) {
-                    autoangle = autoangle + (timedelta*10);
+                    autoangle = autoangle + (timedelta*15);
                     var origin = [autoangle, 15];// d3.event.translate[1]];
                     
                     circle.origin(origin);
