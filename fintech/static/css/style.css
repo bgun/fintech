@@ -118,6 +118,14 @@ h1 {
     stroke-width: 0px;
 }
 
+#current-day {
+    display:inline-block;
+    font-weight: 300;
+    font-size: 20px;
+    margin-top: 7px;
+    margin-bottom: 20px;
+}
+
 #loader {
     width: 128px;
     height: 128px;

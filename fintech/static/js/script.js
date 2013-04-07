@@ -100,17 +100,23 @@ $(function() {
     });
 
     function play() {
-      log("play");
-      playing = true;
-      $playButton.find('span').text('pause');
-      $playButton.find('i').removeClass('icon-play').addClass('icon-pause');
+      if(!playing) {
+        log("play");
+        playing = true;
+        $playButton.find('span').text('pause');
+        $playButton.find('i').removeClass('icon-play').addClass('icon-pause');
+        toastr.info("PLAY");
+      }
     }
 
     function pause() {
-      log("pause");
-      playing = false;
-      $playButton.find('span').text('play');
-      $playButton.find('i').removeClass('icon-pause').addClass('icon-play');
+      if(playing) {
+        log("pause");
+        playing = false;
+        $playButton.find('span').text('play');
+        $playButton.find('i').removeClass('icon-pause').addClass('icon-play');
+        toastr.info("PAUSE");
+      }
     }
 
     function handleClick(d,i) {
@@ -177,7 +183,7 @@ $(function() {
         if(curIndex < 0 || curIndex >= curData.length) {
           pause();
         } else {
-            $sidebar.find('h3').text("Now showing: "+curData[curIndex].date);
+            $sidebar.find('#current-day').text("Now showing: "+curData[curIndex].date);
 
             // animate
             if(playing) {
