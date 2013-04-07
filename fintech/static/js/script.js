@@ -84,6 +84,17 @@ $(function() {
         renderData();
     });
 
+    $(document).on('keyup',function(e) {
+      if(e.keyCode == 32) {
+        if(playing) {
+          pause();
+        } else {
+          play();
+        }
+        renderData();
+      }
+    });
+
     function play() {
       console.log("play");
       playing = true;
@@ -177,7 +188,6 @@ $(function() {
                     d3.selectAll('.currency-'+item.curr).transition().style('fill',color.positive);
                 }
                 */
-                console.log(item.delta);
                 var color = "";
                 if(item.delta >= 1) {
                     color = (item.delta-1) * 255;
